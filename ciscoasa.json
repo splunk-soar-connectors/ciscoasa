@@ -1,12 +1,12 @@
 {
-    "appid"     : "0409C19F-FEE2-4D22-879B-96D90619BD6C",
-    "name"    : "Cisco ASA",
-    "description" : "This app supports containment actions like 'block ip' in addition to investigative actions like 'get config' and 'get version' on a Cisco ASA device.",
+    "appid": "0409C19F-FEE2-4D22-879B-96D90619BD6C",
+    "name": "Cisco ASA",
+    "description": "This app supports containment actions like 'block ip' in addition to investigative actions like 'get config' and 'get version' on a Cisco ASA device.",
     "type": "firewall",
     "publisher": "Phantom",
-    "main_module" : "ciscoasa_connector.pyc",
-    "app_version": "1.2.15",
-    "utctime_updated": "2017-04-29T02:30:25.000000Z",
+    "main_module": "ciscoasa_connector.pyc",
+    "app_version": "1.2.16",
+    "utctime_updated": "2017-12-19T23:40:26.000000Z",
     "package_name": "phantom_ciscoasa",
     "product_vendor": "Cisco Systems",
     "product_name": "Cisco ASA",
@@ -15,510 +15,535 @@
     "logo": "cisco.png",
     "license": "Copyright (c) Phantom Cyber Corporation 2015-2016",
     "configuration": {
-      "device": {
-        "data_type": "string",
-        "order": 0,
-        "description": "Device IP/Hostname",
-        "required": true
-      },
-      "username": {
-        "data_type": "string",
-        "order": 1,
-        "description": "Username",
-        "required": true
-      },
-      "password": {
-        "data_type": "password",
-        "order": 2,
-        "description": "Password",
-        "required": true
-      },
-      "enable_password": {
-        "data_type": "password",
-        "order": 3,
-        "description": "Password used to enter the 'enable' mode",
-        "required": true
-      }
+        "device": {
+            "data_type": "string",
+            "order": 0,
+            "description": "Device IP/Hostname",
+            "required": true
+        },
+        "username": {
+            "data_type": "string",
+            "order": 1,
+            "description": "Username",
+            "required": true
+        },
+        "password": {
+            "data_type": "password",
+            "order": 2,
+            "description": "Password",
+            "required": true
+        },
+        "enable_password": {
+            "data_type": "password",
+            "order": 3,
+            "description": "Password used to enter the 'enable' mode",
+            "required": true
+        }
     },
     "actions": [
-      {
-        "action": "test connectivity",
-        "description": "Validate the asset configuration for connectivity. This action runs a few commands on the device to check the connection and credentials.",
-        "type": "test",
-        "identifier": "test_asset_connectivity",
-        "read_only": true,
-        "parameters": {
+        {
+            "action": "test connectivity",
+            "description": "Validate the asset configuration for connectivity. This action runs a few commands on the device to check the connection and credentials.",
+            "type": "test",
+            "identifier": "test_asset_connectivity",
+            "read_only": true,
+            "parameters": {},
+            "output": [],
+            "versions": "EQ(*)"
         },
-        "output": [],
-        "versions":"EQ(*)"
-      },
-      {
-        "action": "get config",
-        "description": "Gets the current running config of the device.",
-        "type": "investigate",
-        "identifier": "get_config",
-        "read_only": true,
-        "parameters": {
+        {
+            "action": "get config",
+            "description": "Gets the current running config of the device.",
+            "type": "investigate",
+            "identifier": "get_config",
+            "read_only": true,
+            "parameters": {},
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.command",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.output",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric"
+                }
+            ],
+            "versions": "EQ(*)"
         },
-        "output": [
-          {
-            "data_path": "action_result.status",
-            "data_type": "string"
-          },
-          {
-            "data_path": "action_result.message",
-            "data_type": "string"
-          },
-          {
-            "data_path": "action_result.data.*.command",
-            "data_type": "string"
-          },
-          {
-            "data_path": "action_result.data.*.output",
-            "data_type": "string"
-          },
-          {
-            "data_path": "summary.total_objects",
-            "data_type": "numeric"
-          },
-          {
-            "data_path": "summary.total_objects_successful",
-            "data_type": "numeric"
-          }
-        ],
-        "versions":"EQ(*)"
-      },
-      {
-        "action": "get version",
-        "description": "Gets the software version information of the device.",
-        "type": "investigate",
-        "identifier": "get_version",
-        "read_only": true,
-        "parameters": {
+        {
+            "action": "get version",
+            "description": "Gets the software version information of the device.",
+            "type": "investigate",
+            "identifier": "get_version",
+            "read_only": true,
+            "parameters": {},
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.command",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.output",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric"
+                }
+            ],
+            "versions": "EQ(*)"
         },
-        "output": [
-          {
-            "data_path": "action_result.status",
-            "data_type": "string"
-          },
-          {
-            "data_path": "action_result.message",
-            "data_type": "string"
-          },
-          {
-            "data_path": "action_result.data.*.command",
-            "data_type": "string"
-          },
-          {
-            "data_path": "action_result.data.*.output",
-            "data_type": "string"
-          },
-          {
-            "data_path": "summary.total_objects",
-            "data_type": "numeric"
-          },
-          {
-            "data_path": "summary.total_objects_successful",
-            "data_type": "numeric"
-          }
-        ],
-        "versions":"EQ(*)"
-      },
-      {
-        "action": "block ip",
-        "description": "Block an IP",
-        "verbose": "This action requires parameters like 'access-list' and 'interface' to be specified. It's usually a good idea to run 'get config' and 'get version' before to get this information",
-        "type": "contain",
-        "identifier": "block_ip",
-        "undo": "unblock ip",
-        "read_only": false,
-        "parameters": {
-          "dest": {
-            "description": "Dest IP address, can be 'any' or in CIDR format",
-            "data_type": "string",
-            "order": 0,
-            "contains": [ "ip" ],
-            "required": true
-          },
-          "src": {
-            "description": "Source IP address, can be 'any' or in CIDR format",
-            "data_type": "string",
-            "order": 1,
-            "contains": [ "ip" ],
-            "required": true
-          },
-          "direction": {
-            "description": "Rule direction",
-            "data_type": "string",
-            "order": 2,
-            "value_list": ["in", "out"],
-            "required": true
-          },
-          "access-list": {
-            "description": "Access-list name",
-            "data_type": "string",
-            "order": 3,
-            "required": true
-          },
-          "interface": {
-            "description": "Interface name to apply the rule on",
-            "data_type": "string",
-            "order": 4,
-            "required": true
-          },
-          "line": {
-            "description": "Line #; position of the rule, defaults to '1'",
-            "data_type": "numeric",
-            "order": 5
-          }
+        {
+            "action": "block ip",
+            "description": "Block an IP",
+            "verbose": "This action requires parameters like 'access-list' and 'interface' to be specified. It's usually a good idea to run 'get config' and 'get version' before to get this information",
+            "type": "contain",
+            "identifier": "block_ip",
+            "undo": "unblock ip",
+            "read_only": false,
+            "parameters": {
+                "dest": {
+                    "description": "Dest IP address, can be 'any' or in CIDR format",
+                    "data_type": "string",
+                    "order": 0,
+                    "contains": [
+                        "ip"
+                    ],
+                    "required": true
+                },
+                "src": {
+                    "description": "Source IP address, can be 'any' or in CIDR format",
+                    "data_type": "string",
+                    "order": 1,
+                    "contains": [
+                        "ip"
+                    ],
+                    "required": true
+                },
+                "direction": {
+                    "description": "Rule direction",
+                    "data_type": "string",
+                    "order": 2,
+                    "value_list": [
+                        "in",
+                        "out"
+                    ],
+                    "required": true
+                },
+                "access-list": {
+                    "description": "Access-list name",
+                    "data_type": "string",
+                    "order": 3,
+                    "required": true
+                },
+                "interface": {
+                    "description": "Interface name to apply the rule on",
+                    "data_type": "string",
+                    "order": 4,
+                    "required": true
+                },
+                "line": {
+                    "description": "Line #; position of the rule, defaults to '1'",
+                    "data_type": "numeric",
+                    "order": 5
+                }
+            },
+            "render": {
+                "width": 12,
+                "title": "Block Ip",
+                "type": "table",
+                "height": 5
+            },
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "column_name": "Result",
+                    "column_order": 6
+                },
+                {
+                    "data_path": "action_result.parameter.src",
+                    "data_type": "string",
+                    "contains": [
+                        "ip"
+                    ],
+                    "column_name": "Src IP",
+                    "column_order": 2
+                },
+                {
+                    "data_path": "action_result.parameter.direction",
+                    "data_type": "string",
+                    "column_name": "Direction",
+                    "column_order": 1
+                },
+                {
+                    "data_path": "action_result.parameter.dest",
+                    "data_type": "string",
+                    "contains": [
+                        "ip"
+                    ],
+                    "column_name": "Destination IP",
+                    "column_order": 0
+                },
+                {
+                    "data_path": "action_result.parameter.interface",
+                    "data_type": "string",
+                    "column_name": "Interface",
+                    "column_order": 3
+                },
+                {
+                    "data_path": "action_result.parameter.access-list",
+                    "data_type": "string",
+                    "column_name": "Access List",
+                    "column_order": 4
+                },
+                {
+                    "data_path": "action_result.parameter.line",
+                    "data_type": "numeric",
+                    "column_name": "Line",
+                    "column_order": 5
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric"
+                }
+            ],
+            "versions": "EQ(*)"
         },
-        "render": {
-            "width": 12,
-            "title": "Block Ip",
-            "type": "table",
-            "height": 5
-          },
-          "output": [
-            {
-              "data_path": "action_result.status",
-              "data_type": "string",
-              "column_name": "Result",
-              "column_order": 6
+        {
+            "action": "unblock ip",
+            "description": "Unblock an IP",
+            "type": "correct",
+            "identifier": "unblock_ip",
+            "undo": "block ip",
+            "read_only": false,
+            "parameters": {
+                "dest": {
+                    "description": "Dest IP address, can be 'any' or in CIDR format",
+                    "data_type": "string",
+                    "order": 0,
+                    "contains": [
+                        "ip"
+                    ],
+                    "required": true
+                },
+                "src": {
+                    "description": "Source IP address, can be 'any' or in CIDR format",
+                    "data_type": "string",
+                    "order": 1,
+                    "contains": [
+                        "ip"
+                    ],
+                    "required": true
+                },
+                "direction": {
+                    "description": "Rule direction",
+                    "data_type": "string",
+                    "order": 2,
+                    "value_list": [
+                        "in",
+                        "out"
+                    ],
+                    "required": true
+                },
+                "access-list": {
+                    "description": "Access-list name",
+                    "data_type": "string",
+                    "order": 3,
+                    "required": true
+                },
+                "interface": {
+                    "description": "Interface name to apply the rule on",
+                    "data_type": "string",
+                    "order": 4,
+                    "required": true
+                }
             },
-            {
-              "data_path": "action_result.parameter.src",
-              "data_type": "string",
-              "contains": ["ip"],
-              "column_name": "Src IP",
-              "column_order": 2
+            "render": {
+                "width": 12,
+                "title": "Unblock Ip",
+                "type": "table",
+                "height": 5
             },
-            {
-              "data_path": "action_result.parameter.direction",
-              "data_type": "string",
-              "column_name": "Direction",
-              "column_order": 1
-            },
-            {
-              "data_path": "action_result.parameter.dest",
-              "data_type": "string",
-              "contains": ["ip"],
-              "column_name": "Destination IP",
-              "column_order": 0
-            },
-            {
-              "data_path": "action_result.parameter.interface",
-              "data_type": "string",
-              "column_name": "Interface",
-              "column_order": 3
-            },
-            {
-              "data_path": "action_result.parameter.access-list",
-              "data_type": "string",
-              "column_name": "Access List",
-              "column_order": 4
-            },
-            {
-              "data_path": "action_result.parameter.line",
-              "data_type": "numeric",
-              "column_name": "Line",
-              "column_order": 5
-            },
-            {
-              "data_path": "action_result.message",
-              "data_type": "string"
-            },
-            {
-              "data_path": "summary.total_objects",
-              "data_type": "numeric"
-            },
-            {
-              "data_path": "summary.total_objects_successful",
-              "data_type": "numeric"
-            }
-          ],
-          "versions":"EQ(*)"
-      },
-      {
-        "action": "unblock ip",
-        "description": "Unblock an IP",
-        "type": "correct",
-        "identifier": "unblock_ip",
-        "undo": "block ip",
-        "read_only": false,
-        "parameters": {
-          "dest": {
-            "description": "Dest IP address, can be 'any' or in CIDR format",
-            "data_type": "string",
-            "order": 0,
-            "contains": [ "ip" ],
-            "required": true
-          },
-          "src": {
-            "description": "Source IP address, can be 'any' or in CIDR format",
-            "data_type": "string",
-            "order": 1,
-            "contains": [ "ip" ],
-            "required": true
-          },
-          "direction": {
-            "description": "Rule direction",
-            "data_type": "string",
-            "order": 2,
-            "value_list": ["in", "out"],
-            "required": true
-          },
-          "access-list": {
-            "description": "Access-list name",
-            "data_type": "string",
-            "order": 3,
-            "required": true
-          },
-          "interface": {
-            "description": "Interface name to apply the rule on",
-            "data_type": "string",
-            "order": 4,
-            "required": true
-          }
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "column_name": "Result",
+                    "column_order": 6
+                },
+                {
+                    "data_path": "action_result.parameter.src",
+                    "data_type": "string",
+                    "contains": [
+                        "ip"
+                    ],
+                    "column_name": "Src IP",
+                    "column_order": 2
+                },
+                {
+                    "data_path": "action_result.parameter.direction",
+                    "data_type": "string",
+                    "column_name": "Direction",
+                    "column_order": 1
+                },
+                {
+                    "data_path": "action_result.parameter.dest",
+                    "data_type": "string",
+                    "contains": [
+                        "ip"
+                    ],
+                    "column_name": "Destination IP",
+                    "column_order": 0
+                },
+                {
+                    "data_path": "action_result.parameter.interface",
+                    "data_type": "string",
+                    "column_name": "Interface",
+                    "column_order": 3
+                },
+                {
+                    "data_path": "action_result.parameter.access-list",
+                    "data_type": "string",
+                    "column_name": "Access List",
+                    "column_order": 4
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric"
+                }
+            ],
+            "versions": "EQ(*)"
         },
-        "render": {
-            "width": 12,
-            "title": "Unblock Ip",
-            "type": "table",
-            "height": 5
-          },
-          "output": [
-            {
-              "data_path": "action_result.status",
-              "data_type": "string",
-              "column_name": "Result",
-              "column_order": 6
+        {
+            "action": "list sessions",
+            "description": "List the current VPN sessions",
+            "type": "investigate",
+            "identifier": "list_sessions",
+            "read_only": true,
+            "parameters": {},
+            "render": {
+                "width": 12,
+                "title": "List Sessions",
+                "type": "table",
+                "height": 5
             },
-            {
-              "data_path": "action_result.parameter.src",
-              "data_type": "string",
-              "contains": ["ip"],
-              "column_name": "Src IP",
-              "column_order": 2
-            },
-            {
-              "data_path": "action_result.parameter.direction",
-              "data_type": "string",
-              "column_name": "Direction",
-              "column_order": 1
-            },
-            {
-              "data_path": "action_result.parameter.dest",
-              "data_type": "string",
-              "contains": ["ip"],
-              "column_name": "Destination IP",
-              "column_order": 0
-            },
-            {
-              "data_path": "action_result.parameter.interface",
-              "data_type": "string",
-              "column_name": "Interface",
-              "column_order": 3
-            },
-            {
-              "data_path": "action_result.parameter.access-list",
-              "data_type": "string",
-              "column_name": "Access List",
-              "column_order": 4
-            },
-            {
-              "data_path": "action_result.message",
-              "data_type": "string"
-            },
-            {
-              "data_path": "summary.total_objects",
-              "data_type": "numeric"
-            },
-            {
-              "data_path": "summary.total_objects_successful",
-              "data_type": "numeric"
-            }
-          ],
-        "versions":"EQ(*)"
-      },
-      {
-        "action": "list sessions",
-        "description": "List the current VPN sessions",
-        "type": "investigate",
-        "identifier": "list_sessions",
-        "read_only": true,
-        "parameters": {
+            "output": [
+                {
+                    "data_path": "action_result.data.*.users.*.Username",
+                    "data_type": "string",
+                    "contains": [
+                        "user name"
+                    ],
+                    "column_name": "Username",
+                    "column_order": 0
+                },
+                {
+                    "data_path": "action_result.data.*.users.*.PublicIP",
+                    "data_type": "string",
+                    "contains": [
+                        "ip"
+                    ],
+                    "column_name": "IP",
+                    "column_order": 1
+                },
+                {
+                    "data_path": "action_result.data.*.users.*.LoginTime",
+                    "data_type": "string",
+                    "column_name": "Login Time",
+                    "column_order": 2
+                },
+                {
+                    "data_path": "action_result.data.*.users.*.Duration",
+                    "data_type": "string",
+                    "column_name": "Duration",
+                    "column_order": 3
+                },
+                {
+                    "data_path": "action_result.id",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.users.*.VLAN",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.users.*.Index",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.users.*.BytesRx",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.users.*.BytesTx",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.users.*.Hashing",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.users.*.License",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.users.*.Protocol",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.users.*.NACResult",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.users.*.Encryption",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.users.*.Inactivity",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.users.*.GroupPolicy",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.users.*.TunnelGroup",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.users.*.VLANMapping",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.summary.total_users",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric"
+                }
+            ],
+            "versions": "EQ(*)"
         },
-        "render": {
-          "width": 12,
-          "title": "List Sessions",
-          "type": "table",
-          "height": 5
-        },
-        "output": [
-          {
-            "data_path": "action_result.data.*.users.*.Username",
-            "data_type": "string",
-            "contains": [ "user name" ],
-            "column_name": "Username",
-            "column_order": 0
-          },
-          {
-            "data_path": "action_result.data.*.users.*.PublicIP",
-            "data_type": "string",
-            "contains": [ "ip" ],
-            "column_name": "IP",
-            "column_order": 1
-          },
-          {
-            "data_path": "action_result.data.*.users.*.LoginTime",
-            "data_type": "string",
-            "column_name": "Login Time",
-            "column_order": 2
-          },
-          {
-            "data_path": "action_result.data.*.users.*.Duration",
-            "data_type": "string",
-            "column_name": "Duration",
-            "column_order": 3
-          },
-          {
-            "data_path": "action_result.id",
-            "data_type": "string"
-          },
-          {
-            "data_path": "action_result.data.*.users.*.VLAN",
-            "data_type": "string"
-          },
-          {
-            "data_path": "action_result.data.*.users.*.Index",
-            "data_type": "string"
-          },
-          {
-            "data_path": "action_result.data.*.users.*.BytesRx",
-            "data_type": "string"
-          },
-          {
-            "data_path": "action_result.data.*.users.*.BytesTx",
-            "data_type": "string"
-          },
-          {
-            "data_path": "action_result.data.*.users.*.Hashing",
-            "data_type": "string"
-          },
-          {
-            "data_path": "action_result.data.*.users.*.License",
-            "data_type": "string"
-          },
-          {
-            "data_path": "action_result.data.*.users.*.Protocol",
-            "data_type": "string"
-          },
-          {
-            "data_path": "action_result.data.*.users.*.NACResult",
-            "data_type": "string"
-          },
-          {
-            "data_path": "action_result.data.*.users.*.Encryption",
-            "data_type": "string"
-          },
-          {
-            "data_path": "action_result.data.*.users.*.Inactivity",
-            "data_type": "string"
-          },
-          {
-            "data_path": "action_result.data.*.users.*.GroupPolicy",
-            "data_type": "string"
-          },
-          {
-            "data_path": "action_result.data.*.users.*.TunnelGroup",
-            "data_type": "string"
-          },
-          {
-            "data_path": "action_result.data.*.users.*.VLANMapping",
-            "data_type": "string"
-          },
-          {
-            "data_path": "action_result.status",
-            "data_type": "string"
-          },
-          {
-            "data_path": "action_result.message",
-            "data_type": "string"
-          },
-          {
-            "data_path": "action_result.summary.total_users",
-            "data_type": "numeric"
-          },
-          {
-            "data_path": "summary.total_objects",
-            "data_type": "numeric"
-          },
-          {
-            "data_path": "summary.total_objects_successful",
-            "data_type": "numeric"
-          }
-        ],
-        "versions":"EQ(*)"
-      },
-      {
-        "action": "terminate session",
-        "description": "Terminates all VPN sessions of a user",
-        "type": "contain",
-        "identifier": "terminate_session",
-        "read_only": false,
-        "parameters": {
-          "username": {
-            "description": "User to logoff",
-            "data_type": "string",
-            "contains": [ "user name" ],
-            "required": true,
-            "primary": true,
-            "order": 0
-          }
-        },
-        "render": {
-          "width": 12,
-          "title": "Terminate Session",
-          "type": "table",
-          "height": 5
-        },
-        "output": [
-          {
-            "data_path": "action_result.message",
-            "data_type": "string",
-            "column_name": "Message",
-            "column_order": 0
-          },
-          {
-            "data_path": "action_result.parameter.username",
-            "data_type": "string",
-            "column_name": "Username",
-            "contains": ["user name"],
-            "column_order": 1
-          },
-          {
-            "data_path": "action_result.id",
-            "data_type": "string"
-          },
-          {
-            "data_path": "action_result.status",
-            "data_type": "string"
-          },
-          {
-            "data_path": "action_result.summary.sessions_terminated",
-            "data_type": "numeric"
-          },
-          {
-            "data_path": "summary.total_objects",
-            "data_type": "numeric"
-          },
-          {
-            "data_path": "summary.total_objects_successful",
-            "data_type": "numeric"
-          }
-        ],
-        "versions": "EQ(*)"
-      }
+        {
+            "action": "terminate session",
+            "description": "Terminates all VPN sessions of a user",
+            "type": "contain",
+            "identifier": "terminate_session",
+            "read_only": false,
+            "parameters": {
+                "username": {
+                    "description": "User to logoff",
+                    "data_type": "string",
+                    "contains": [
+                        "user name"
+                    ],
+                    "required": true,
+                    "primary": true,
+                    "order": 0
+                }
+            },
+            "render": {
+                "width": 12,
+                "title": "Terminate Session",
+                "type": "table",
+                "height": 5
+            },
+            "output": [
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "column_name": "Message",
+                    "column_order": 0
+                },
+                {
+                    "data_path": "action_result.parameter.username",
+                    "data_type": "string",
+                    "column_name": "Username",
+                    "contains": [
+                        "user name"
+                    ],
+                    "column_order": 1
+                },
+                {
+                    "data_path": "action_result.id",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.summary.sessions_terminated",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric"
+                }
+            ],
+            "versions": "EQ(*)"
+        }
     ]
 }
-
