@@ -14,7 +14,7 @@
     "min_phantom_version": "1.2.236",
     "logo": "logo_cisco.svg",
     "logo_dark": "logo_cisco_dark.svg",
-    "license": "Copyright (c) Phantom Cyber Corporation 2015-2016",
+    "license": "Copyright (c) Phantom Cyber Corporation, 2015-2018",
     "configuration": {
         "device": {
             "data_type": "string",
