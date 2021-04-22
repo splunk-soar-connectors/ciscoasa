@@ -14,7 +14,7 @@
 
 # Json keys
 CISCOASA_JSON_DIRECTION = "direction"
-CISCOASA_JSON_ACCESS_LIST = "access-list"
+CISCOASA_JSON_ACCESS_LIST = "access_list"
 CISCOASA_JSON_INTERFACE = "interface"
 CISCOASA_JSON_LINE = "line"
 CISCOASA_JSON_SRC_MASK = "src_mask"
