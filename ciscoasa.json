@@ -1,5 +1,5 @@
 {
-    "appid": "0409C19F-FEE2-4D22-879B-96D90619BD6C",
+    "appid": "0409c19f-fee2-4d22-879b-96d90619bd6c",
     "name": "Cisco ASA",
     "description": "This app supports containment actions like 'block ip' in addition to investigative actions like 'get config' and 'get version' on a Cisco ASA device",
     "type": "firewall",
@@ -16,7 +16,7 @@
     "python_version": "3",
     "logo": "logo_cisco.svg",
     "logo_dark": "logo_cisco_dark.svg",
-    "license": "Copyright (c) Phantom Cyber Corporation 2015-2021",
+    "license": "Copyright (c) 2014-2021 Splunk Inc.",
     "configuration": {
         "device": {
             "data_type": "string",
