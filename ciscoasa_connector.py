@@ -14,12 +14,18 @@
 
 # Phantom imports
 import phantom.app as phantom
-from phantom.ciscoios_connector import CiscoiosConnector
-from phantom.ciscoios_consts import *
+from phantom.base_connector import BaseConnector
 from phantom.action_result import ActionResult
 
 # THIS Connector imports
 from ciscoasa_consts import *
+
+import paramiko
+import socket
+import sys
+from socket import inet_ntoa
+from struct import pack
+from parse import parse
 
 # Timeouts in seconds
 FIRST_RECV_TIMEOUT = 30
@@ -30,7 +36,7 @@ SEND_TIMEOUT = 2
 MAX_RECV_BYTES_TO_READ = 5 * 1024
 
 
-class CiscoasaConnector(CiscoiosConnector):
+class CiscoasaConnector(BaseConnector):
 
     # Actions supported
     ACTION_ID_GET_CONFIG = "get_config"
@@ -44,6 +50,9 @@ class CiscoasaConnector(CiscoiosConnector):
 
         # Call the CiscoiosConnector init first
         super(CiscoasaConnector, self).__init__()
+
+        self._ssh_client = None
+        self._shell_channel = None
 
     def _validate_access_list(self, access_list, direction, intf, acc_groups, action_result):
 
@@ -326,6 +335,295 @@ class CiscoasaConnector(CiscoiosConnector):
         self.set_validator("ip", self.validate_ip)
         return phantom.APP_SUCCESS
 
+    def _wait_for_data(self, size):
+        """Waits till we have some data
+        """
+        # The first timeout is one value, most probably large
+
+        self._shell_channel.settimeout(FIRST_RECV_TIMEOUT)
+        output = ""
+
+        while (1):
+            try:
+
+                data = self._shell_channel.recv(size)
+
+                data = data.decode()
+                output += data
+
+                # The next timeout is a smaller value
+                self._shell_channel.settimeout(SECOND_ONWARDS_RECV_TIMEOUT)
+            except socket.timeout:
+                break
+            except:
+                return (phantom.APP_ERROR, None, sys.exc_info()[0])
+
+        return (phantom.APP_SUCCESS, output, None)
+
+    def _connect(self):
+
+        if (self._shell_channel is not None):
+            return phantom.APP_SUCCESS
+
+        enable_password = self.get_config()[CISCOIOS_JSON_ENABLE_PASSWORD]
+
+        # start the connection
+        status_code = self._start_connection()
+
+        if (phantom.is_fail(status_code)):
+            return status_code
+
+        cmd_to_run = 'enable'
+        self.save_progress(CISCOIOS_PROG_EXECUTING_CMD, cmd_to_run)
+        status_code, cmd_output = self._send_command(cmd_to_run, self)
+        if (phantom.is_fail(status_code)):
+            return status_code
+
+        self.save_progress(CISCOIOS_PROG_SENDING_ENABLE_CREDENTIALS)
+        status_code, cmd_output = self._send_command(enable_password, self)
+        if (phantom.is_fail(status_code)):
+            return status_code
+
+        # Need to validate the text output for this command
+        self.debug_print('status_code: ', status_code)
+        self.debug_print('cmd_output: ', cmd_output)
+
+        if (cmd_output.lower().find('invalid password') != -1):
+            self.set_status(phantom.APP_ERROR, CISCOIOS_ERR_ENABLE_COMMAND_LOGIN_FAILED)
+            self.append_to_message(CISCOIOS_MSG_CHECK_YOUR_CREDENTIALS)
+            return
+
+        # "Set terminal pager"
+        cmd_to_run = 'terminal pager 0'
+        self.save_progress(CISCOIOS_PROG_EXECUTING_CMD, cmd_to_run)
+        status_code, cmd_output = self._send_command(cmd_to_run, self)
+        if (phantom.is_fail(status_code)):
+            return status_code
+
+        # Re-init the self status to Error, required for further processing
+        self.set_status(phantom.APP_ERROR)
+        return phantom.APP_SUCCESS
+
+    def _start_connection(self):
+        """Starts the shell
+        """
+
+        config = self.get_config()
+        server = config[phantom.APP_JSON_DEVICE]
+        user = config[phantom.APP_JSON_USERNAME]
+        password = config[phantom.APP_JSON_PASSWORD]
+
+        self._ssh_client = paramiko.SSHClient()
+        self._ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+
+        # Connect to the asa box
+        self.save_progress(phantom.APP_PROG_CONNECTING_TO_ELLIPSES, server)
+
+        try:
+            self._ssh_client.connect(hostname=server, username=user, password=password,
+                    allow_agent=False, look_for_keys=False)
+        except Exception as e:
+            return self.set_status(phantom.APP_ERROR, CISCOIOS_ERR_SSH_CONNECTION_FAILED, e)
+
+        try:
+            self._shell_channel = self._ssh_client.invoke_shell()
+        except Exception as e:
+            self._ssh_client.close()
+            return self.set_status(phantom.APP_ERROR, CISCOIOS_ERR_SSH_CONNECTION_FAILED, e)
+
+        ret_code, output, exc = self._wait_for_data(MAX_RECV_BYTES_TO_READ)
+
+        if (phantom.is_fail(ret_code)):
+            self.set_status(phantom.APP_ERROR, CISCOIOS_ERR_READ_FROM_SERVER_FAILED, exc)
+            if (output):
+                self.append_to_message(output)
+
+            return self.get_status()
+
+        return phantom.APP_SUCCESS
+
+    def _send_command(self, command, result):
+        """Send a command to the server on the provided channel
+
+            Args:
+                The command to send
+                The MAX size of data to recv
+                The object to use to store the status
+
+            Return:
+                The status code
+                The recieved data
+        """
+
+        size = MAX_RECV_BYTES_TO_READ
+
+        # Set the required timeout for the send
+        self._shell_channel.settimeout(SECOND_ONWARDS_RECV_TIMEOUT)
+        try:
+            self._shell_channel.send(command + "\n")
+        except Exception as e:
+            # "Command send failed"
+            return (result.set_status(phantom.APP_ERROR, CISCOIOS_ERR_SHELL_SEND_COMMAND, e, command), None)
+
+        # Get the data
+        ret_code, output, exc = self._wait_for_data(size)
+
+        if (phantom.is_fail(ret_code)):
+            result.set_status(phantom.APP_ERROR, CISCOIOS_ERR_READ_FROM_SERVER_FAILED, exc)
+
+        return (result.set_status(phantom.APP_SUCCESS, CISCOIOS_SUCC_CMD_EXEC), output)
+
+    def _reformat_cmd_output(self, cmd_output, rem_command=True, to_list=True):
+
+        if (cmd_output is None):
+            return None
+
+        try:
+            data_lines = cmd_output.splitlines()
+
+            # Remove the last line, it's going to be the prompt
+            data_lines.pop()
+
+            # Remove the first line that is the command
+            if (rem_command):
+                del data_lines[0]
+
+            if (to_list):
+                return data_lines
+        except:
+            return None
+
+        return ('\r\n'.join(data_lines))
+
+    def _get_cmd_output_status(self, cmd_output):
+
+        if (not cmd_output):
+            return phantom.APP_SUCCESS
+
+        if (cmd_output.find('ERROR:') != -1):
+            return phantom.APP_ERROR
+
+        if (cmd_output.find('Invalid input detected at ') != -1):
+            return phantom.APP_ERROR
+
+        return phantom.APP_SUCCESS
+
+    def _get_network_string(self, ip_str):
+
+        ip_str = ip_str.strip()
+
+        if (ip_str == CISCOIOS_CONST_ANY):
+            return ip_str
+
+        if (ip_str.find('/') == -1):
+            # it's not in cidr format, so just add the mask for the ip
+            return ip_str + ' 255.255.255.255'
+
+        # need to convert to the proper netmask
+        ip_str_parsed = parse("{ip}/{mask}", ip_str)
+
+        mask = int(ip_str_parsed['mask'])
+
+        bits = 0xffffffff ^ (1 << 32 - mask) - 1
+        net_str = inet_ntoa(pack('>I', bits))
+
+        return '{0} {1}'.format(ip_str_parsed['ip'], net_str)
+
+    def _get_version(self):
+        """Function that executes the show version command on the asa box
+
+        Args:
+
+        Return:
+            Status code
+        """
+
+        if (phantom.is_fail(self._connect())):
+            return self.get_status()
+
+        # Create the action_result to store status
+        action_result = self.add_action_result(ActionResult())
+
+        cmd_to_run = "show version"
+        status_code, cmd_output = self._send_command(cmd_to_run, action_result)
+        if (phantom.is_fail(status_code)):
+            return action_result.get_status()
+
+        curr_data = action_result.add_data({})
+        curr_data[CISCOIOS_JSON_CMD] = cmd_to_run
+        cmd_output = self._reformat_cmd_output(cmd_output, rem_command=True, to_list=False)
+        curr_data[CISCOIOS_JSON_OUTPUT] = cmd_output
+
+        self.save_progress(CISCOIOS_PROG_EXECUTED_CMD, cmd_to_run)
+
+        return action_result.set_status(phantom.APP_SUCCESS, CISCOIOS_SUCC_CMD_EXEC)
+
+    def _test_asset_connectivity(self, param):
+
+        if (phantom.is_fail(self._connect())):
+            self.debug_print("connect failed")
+            self.save_progress(CISCOIOS_ERR_CONNECTIVITY_TEST)
+            return self.append_to_message(CISCOIOS_ERR_CONNECTIVITY_TEST)
+
+        self.debug_print("connect passed")
+        return self.set_status_save_progress(phantom.APP_SUCCESS, CISCOIOS_SUCC_CONNECTIVITY_TEST)
+
+    def _get_config(self):
+        """Function that executes the show run command on the asa box
+
+            Args:
+
+            Return:
+                Status code
+        """
+
+        if (phantom.is_fail(self._connect())):
+            return self.get_status()
+
+        # Create the action_result to store status
+        action_result = self.add_action_result(ActionResult())
+
+        cmd_to_run = "show run"
+        status_code, cmd_output = self._send_command(cmd_to_run, action_result)
+        if (phantom.is_fail(status_code)):
+            return action_result.get_status()
+
+        curr_data = action_result.add_data({})
+        curr_data[CISCOIOS_JSON_CMD] = cmd_to_run
+        cmd_output = self._reformat_cmd_output(cmd_output, rem_command=True, to_list=False)
+        curr_data[CISCOIOS_JSON_OUTPUT] = cmd_output
+
+        self.save_progress(CISCOIOS_PROG_EXECUTED_CMD, cmd_to_run)
+
+        cmd_to_run = "show switch vlan"
+        status_code, cmd_output = self._send_command(cmd_to_run, action_result)
+        if (phantom.is_fail(status_code)):
+            return action_result.get_status()
+
+        curr_data = action_result.add_data({})
+        curr_data[CISCOIOS_JSON_CMD] = cmd_to_run
+        cmd_output = self._reformat_cmd_output(cmd_output, rem_command=True, to_list=False)
+        curr_data[CISCOIOS_JSON_OUTPUT] = cmd_output
+
+        self.save_progress(CISCOIOS_PROG_EXECUTED_CMD, cmd_to_run)
+
+        return action_result.set_status(phantom.APP_SUCCESS)
+
+    def _cleanup(self):
+
+        if (self._ssh_client):
+            # Close the ssh connection
+            self._ssh_client.close()
+            self._ssh_client = None
+
+        self._shell_channel = None
+
+    def finalize(self):
+        self._cleanup()
+
+    def handle_exception(self, e):
+        self._cleanup()
+
     def handle_action(self, param):
         """Function that handles all the actions
 
@@ -354,9 +652,9 @@ class CiscoasaConnector(CiscoiosConnector):
             self._test_asset_connectivity(param)
         return self.get_status()
 
+
 if __name__ == '__main__':
 
-    import sys
     try:
         import simplejson as json
     except:
@@ -365,7 +663,7 @@ if __name__ == '__main__':
     pudb.set_trace()
 
     if (len(sys.argv) < 2):
-        print "No test json specified as input"
+        print("No test json specified as input")
         exit(0)
 
     with open(sys.argv[1]) as f:
@@ -376,6 +674,6 @@ if __name__ == '__main__':
         connector = CiscoasaConnector()
         connector.print_progress_message = True
         ret_val = connector._handle_action(json.dumps(in_json), None)
-        print ret_val
+        print(ret_val)
 
     exit(0)
