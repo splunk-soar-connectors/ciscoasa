@@ -1,7 +1,7 @@
 {
     "appid": "0409c19f-fee2-4d22-879b-96d90619bd6c",
     "name": "Cisco ASA",
-    "description": "This app supports containment actions like 'block ip' in addition to investigative actions like 'get config' and 'get version' on a Cisco ASA device",
+    "description": "This app supports containment actions in addition to investigative actions on a Cisco ASA device",
     "type": "firewall",
     "publisher": "Phantom",
     "main_module": "ciscoasa_connector.py",
