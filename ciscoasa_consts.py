@@ -49,3 +49,19 @@ CISCOIOS_PROG_EXECUTED_CMD = "Executed command =  '{}'"
 
 # Other constants
 CISCOIOS_CONST_ANY = "any"
+
+# Timeouts in seconds
+FIRST_RECV_TIMEOUT = 30
+SECOND_ONWARDS_RECV_TIMEOUT = 1
+SEND_TIMEOUT = 2
+
+# The max number of bytes to read in Kb
+MAX_RECV_BYTES_TO_READ = 5 * 1024
+
+# Actions supported
+ACTION_ID_GET_CONFIG = "get_config"
+ACTION_ID_GET_VERSION = "get_version"
+ACTION_ID_LIST_SESSIONS = "list_sessions"
+ACTION_ID_TERMINATE_SESSION = "terminate_session"
+ACTION_ID_BLOCK_IP = "block_ip"
+ACTION_ID_UNBLOCK_IP = "unblock_ip"
