@@ -86,7 +86,10 @@
                 },
                 {
                     "data_path": "action_result.message",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "example_values": [
+                        "Command execution successful"
+                    ]
                 },
                 {
                     "data_path": "summary.total_objects",
@@ -129,7 +132,10 @@
                 },
                 {
                     "data_path": "action_result.message",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "example_values": [
+                        "Command execution successful"
+                    ]
                 },
                 {
                     "data_path": "summary.total_objects",
@@ -268,7 +274,10 @@
                 },
                 {
                     "data_path": "action_result.message",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "example_values": [
+                        "Command execution successful"
+                    ]
                 },
                 {
                     "data_path": "summary.total_objects",
@@ -395,7 +404,10 @@
                 },
                 {
                     "data_path": "action_result.message",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "example_values": [
+                        "Command execution successful"
+                    ]
                 },
                 {
                     "data_path": "summary.total_objects",
@@ -514,11 +526,17 @@
                 },
                 {
                     "data_path": "action_result.summary.total_users",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "example_values": [
+                        0
+                    ]
                 },
                 {
                     "data_path": "action_result.message",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "example_values": [
+                        "Successfully retrived user sessions"
+                    ]
                 },
                 {
                     "data_path": "summary.total_objects",
@@ -579,13 +597,19 @@
                 },
                 {
                     "data_path": "action_result.summary.sessions_terminated",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "example_values": [
+                        0
+                    ]
                 },
                 {
                     "data_path": "action_result.message",
                     "data_type": "string",
                     "column_name": "Message",
-                    "column_order": 0
+                    "column_order": 0,
+                    "example_values": [
+                        "No such user is logged in"
+                    ]
                 },
                 {
                     "data_path": "summary.total_objects",

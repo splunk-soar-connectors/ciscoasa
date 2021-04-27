@@ -603,7 +603,7 @@ class CiscoasaConnector(BaseConnector):
 
         self.save_progress(CISCOIOS_PROG_EXECUTED_CMD, cmd_to_run)
 
-        return action_result.set_status(phantom.APP_SUCCESS)
+        return action_result.set_status(phantom.APP_SUCCESS, CISCOIOS_SUCC_CMD_EXEC)
 
     def _cleanup(self):
 
