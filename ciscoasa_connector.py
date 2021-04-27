@@ -79,7 +79,7 @@ class CiscoasaConnector(BaseConnector):
             return action_result.set_status(phantom.APP_ERROR, CISCOASA_ERR_ASA_INVALID_DATA_ACCESS_GROUP)
 
         self._parse_to_dict(data, action_result)
-        if (action_result.get_data()):
+        if (action_result.get_data()[0]['users']):
             return action_result.set_status(phantom.APP_SUCCESS, "Successfully retrived user sessions")
         else:
             return action_result.set_status(phantom.APP_SUCCESS, "There are no active sessions")
@@ -616,17 +616,17 @@ class CiscoasaConnector(BaseConnector):
         action = self.get_action_identifier()
 
         # Now each individual actions
-        if (action == self.ACTION_ID_GET_CONFIG):
+        if (action == ACTION_ID_GET_CONFIG):
             self._get_config()
-        elif (action == self.ACTION_ID_GET_VERSION):
+        elif (action == ACTION_ID_GET_VERSION):
             self._get_version()
-        elif (action == self.ACTION_ID_LIST_SESSIONS):
+        elif (action == ACTION_ID_LIST_SESSIONS):
             self._list_sessions()
-        elif (action == self.ACTION_ID_TERMINATE_SESSION):
+        elif (action == ACTION_ID_TERMINATE_SESSION):
             self._terminate_session(param)
-        elif (action == self.ACTION_ID_BLOCK_IP):
+        elif (action == ACTION_ID_BLOCK_IP):
             self._handle_block_ip(param)
-        elif (action == self.ACTION_ID_UNBLOCK_IP):
+        elif (action == ACTION_ID_UNBLOCK_IP):
             self._handle_block_ip(param, True)
         elif (action == phantom.ACTION_ID_TEST_ASSET_CONNECTIVITY):
             self._test_asset_connectivity(param)
