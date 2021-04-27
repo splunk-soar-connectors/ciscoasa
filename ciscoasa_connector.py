@@ -44,7 +44,7 @@ class CiscoasaConnector(BaseConnector):
 
     def __init__(self):
 
-        # Call the CiscoiosConnector init first
+        # Call the BaseConnectors init first
         super(CiscoasaConnector, self).__init__()
 
         self._ssh_client = None
