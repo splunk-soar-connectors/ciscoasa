@@ -226,7 +226,10 @@
                     "data_path": "action_result.parameter.access_list",
                     "data_type": "string",
                     "column_name": "Access List",
-                    "column_order": 4
+                    "column_order": 4,
+                    "example_values": [
+                        "Default"
+                    ]
                 },
                 {
                     "data_path": "action_result.parameter.dest",
@@ -235,19 +238,28 @@
                         "ip"
                     ],
                     "column_name": "Destination IP",
-                    "column_order": 0
+                    "column_order": 0,
+                    "example_values": [
+                        "8.8.8.8"
+                    ]
                 },
                 {
                     "data_path": "action_result.parameter.direction",
                     "data_type": "string",
                     "column_name": "Direction",
-                    "column_order": 1
+                    "column_order": 1,
+                    "example_values": [
+                        "in"
+                    ]
                 },
                 {
                     "data_path": "action_result.parameter.interface",
                     "data_type": "string",
                     "column_name": "Interface",
-                    "column_order": 3
+                    "column_order": 3,
+                    "example_values": [
+                        "Ethernet0/1"
+                    ]
                 },
                 {
                     "data_path": "action_result.parameter.line",
@@ -262,7 +274,10 @@
                         "ip"
                     ],
                     "column_name": "Src IP",
-                    "column_order": 2
+                    "column_order": 2,
+                    "example_values": [
+                        "8.8.8.8"
+                    ]
                 },
                 {
                     "data_path": "action_result.data",
@@ -362,7 +377,10 @@
                     "data_path": "action_result.parameter.access_list",
                     "data_type": "string",
                     "column_name": "Access List",
-                    "column_order": 4
+                    "column_order": 4,
+                    "example_values": [
+                        "Default"
+                    ]
                 },
                 {
                     "data_path": "action_result.parameter.dest",
@@ -371,19 +389,28 @@
                         "ip"
                     ],
                     "column_name": "Destination IP",
-                    "column_order": 0
+                    "column_order": 0,
+                    "example_values": [
+                        "8.8.8.8"
+                    ]
                 },
                 {
                     "data_path": "action_result.parameter.direction",
                     "data_type": "string",
                     "column_name": "Direction",
-                    "column_order": 1
+                    "column_order": 1,
+                    "example_values": [
+                        "in"
+                    ]
                 },
                 {
                     "data_path": "action_result.parameter.interface",
                     "data_type": "string",
                     "column_name": "Interface",
-                    "column_order": 3
+                    "column_order": 3,
+                    "example_values": [
+                        "Ethernet0/1"
+                    ]
                 },
                 {
                     "data_path": "action_result.parameter.src",
@@ -392,7 +419,10 @@
                         "ip"
                     ],
                     "column_name": "Src IP",
-                    "column_order": 2
+                    "column_order": 2,
+                    "example_values": [
+                        "8.8.8.8"
+                    ]
                 },
                 {
                     "data_path": "action_result.data",
@@ -589,7 +619,10 @@
                     "contains": [
                         "user name"
                     ],
-                    "column_order": 1
+                    "column_order": 1,
+                    "example_values": [
+                        "Admin"
+                    ]
                 },
                 {
                     "data_path": "action_result.data",
