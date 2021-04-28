@@ -40,17 +40,17 @@ class CiscoasaConnector(BaseConnector):
         # access-group <acc_list_name> <direction> interface <interface_name>
 
         for curr_acc_list in acc_groups:
-            if (len(curr_acc_list) == 0):
+            if len(curr_acc_list) == 0:
                 continue
 
             # Check if the direction and interface name match
             acc_list_broken = curr_acc_list.split(' ')
-            if (len(acc_list_broken) < 5):
+            if len(acc_list_broken) < 5:
                 continue
 
             if (direction == acc_list_broken[2]) and (intf == acc_list_broken[4]):
                 # match, check the name
-                if (access_list == acc_list_broken[1]):
+                if access_list == acc_list_broken[1]:
                     return action_result.set_status(phantom.APP_SUCCESS, CISCOASA_SUCC_ASA_FOUND_ACCESS_LIST)
                 else:
                     # There is some other access-list for this interface and
@@ -64,22 +64,22 @@ class CiscoasaConnector(BaseConnector):
     def _list_sessions(self):
         """ List users currently connected over webvpn
         """
-        if (phantom.is_fail(self._connect())):
+        if phantom.is_fail(self._connect()):
             return self.get_status()
 
         action_result = self.add_action_result(ActionResult())
 
         cmd = "show vpn-sessiondb webvpn"
         status_code, cmd_output = self._send_command(cmd, action_result)
-        if (phantom.is_fail(status_code)):
+        if phantom.is_fail(status_code):
             return action_result.set_status(phantom.APP_ERROR, CISCOASA_ERR_CMD_EXEC)
 
         data = self._reformat_cmd_output(cmd_output)
-        if (data is None):
+        if data is None:
             return action_result.set_status(phantom.APP_ERROR, CISCOASA_ERR_ASA_INVALID_DATA_ACCESS_GROUP)
 
         self._parse_to_dict(data, action_result)
-        if (action_result.get_data()[0]['users']):
+        if action_result.get_data()[0]['users']:
             return action_result.set_status(phantom.APP_SUCCESS, "Successfully retrived user sessions")
         else:
             return action_result.set_status(phantom.APP_SUCCESS, "There are no active sessions")
@@ -114,7 +114,7 @@ class CiscoasaConnector(BaseConnector):
 
     def _terminate_session(self, param):
 
-        if (phantom.is_fail(self._connect())):
+        if phantom.is_fail(self._connect()):
             return self.get_status()
 
         action_result = self.add_action_result(ActionResult(param))
@@ -123,17 +123,17 @@ class CiscoasaConnector(BaseConnector):
 
         cmd = "vpn-sessiondb logoff name {}\n".format(target)
         status_code, cmd_output = self._send_command(cmd, action_result)
-        if (phantom.is_fail(status_code)):
+        if phantom.is_fail(status_code):
             return action_result.set_status(phantom.APP_ERROR, CISCOASA_ERR_CMD_EXEC)
 
         data = self._reformat_cmd_output(cmd_output)
         try:
             num = int(data[1].split(':')[-1])
-            if (num == 0):
+            if num == 0:
                 return action_result.set_status(phantom.APP_SUCCESS, "No such user is logged in")
         except:
             output = data[1].split(':')
-            if (output[0] == "ERROR"):
+            if output[0] == "ERROR":
                 return action_result.set_status(phantom.APP_ERROR, "Invalid input")
 
         action_result.update_summary({"sessions_terminated": num})
@@ -142,15 +142,15 @@ class CiscoasaConnector(BaseConnector):
     def _is_online(self, target, action_result):
         cmd = "show vpn-sessiondb webvpn filter name {}".format(target)
         status_code, cmd_output = self._send_command(cmd, action_result)
-        if (phantom.is_fail(status_code)):
+        if phantom.is_fail(status_code):
             return action_result.set_status(phantom.APP_ERROR, CISCOASA_ERR_CMD_EXEC)
 
         data = self._reformat_cmd_output(cmd_output)
         try:
-            if (data[0].split(':')[0] == "INFO"):
+            if data[0].split(':')[0] == "INFO":
                 return action_result.set_status(phantom.APP_SUCCESS, "User is not logged in")
         except:
-            if (data[1].split(':')[0] == "ERROR"):
+            if data[1].split(':')[0] == "ERROR":
                 return action_result.set_status(phantom.APP_ERROR, "Invalid input")
 
     def _block_ip(self, param, delete, action_result):
@@ -183,28 +183,28 @@ class CiscoasaConnector(BaseConnector):
         # First get the access-list for the given direction+interface combination
         cmd_to_run = "show running-config access-group"
         status_code, cmd_output = self._send_command(cmd_to_run, action_result)
-        if (phantom.is_fail(status_code)):
+        if phantom.is_fail(status_code):
             return (action_result.set_status(phantom.APP_ERROR, CISCOASA_ERR_CMD_EXEC), cmd_output)
 
         # create a python list of acc lists
         data_to_parse = self._reformat_cmd_output(cmd_output)
-        if (data_to_parse is None):
+        if data_to_parse is None:
             return (action_result.set_status(phantom.APP_ERROR, CISCOASA_ERR_ASA_INVALID_DATA_ACCESS_GROUP), cmd_output)
 
         # Now we need to validate the access-list name
         ret_code = self._validate_access_list(access_list, direction, intf, data_to_parse, action_result)
 
-        if (phantom.is_fail(ret_code)):
+        if phantom.is_fail(ret_code):
             self.debug_print("acl validation failed")
             return (action_result.get_status(), None)
 
         # Set the boolean which specifies if we need to create the access group or not
         create_access_group = False
-        if (ret_code == CISCOASA_SUCC_ASA_ACCESS_LIST_NOT_FOUND):
+        if ret_code == CISCOASA_SUCC_ASA_ACCESS_LIST_NOT_FOUND:
             create_access_group = True
 
         # Things get a bit different when the access-list is to be deleted
-        if (delete is True):
+        if delete is True:
             # Should not create the access group
             create_access_group = False
 
@@ -213,7 +213,7 @@ class CiscoasaConnector(BaseConnector):
         # First we will require to go into the configure terminal
         cmd_to_run = "configure terminal"
         status_code, cmd_output = self._send_command(cmd_to_run, action_result)
-        if (phantom.is_fail(status_code)):
+        if phantom.is_fail(status_code):
             return (action_result.set_status(phantom.APP_ERROR, CISCOASA_ERR_CMD_EXEC), cmd_output)
 
         self.save_progress(CISCOIOS_PROG_EXECUTED_CMD, cmd_to_run)
@@ -236,12 +236,12 @@ class CiscoasaConnector(BaseConnector):
         # acc_list = "access-list {} line {} extended deny ip {} ".format( access_list, line, src)
         acc_list = "access-list %s " % access_list
 
-        if (delete is False):
+        if delete is False:
             acc_list += "line %s " % line
 
         acc_list += "extended deny ip %s " % self._get_network_string(src)
 
-        if (delete is True):
+        if delete is True:
             acc_list = "no " + acc_list
 
         # Add the dest ip
@@ -251,13 +251,13 @@ class CiscoasaConnector(BaseConnector):
 
         status_code, cmd_output = self._send_command(acc_list, action_result)
 
-        if (phantom.is_fail(status_code)):
+        if phantom.is_fail(status_code):
             return (action_result.set_status(phantom.APP_ERROR, CISCOASA_ERR_CMD_EXEC), cmd_output)
 
-        if (len(cmd_output) > 0):
+        if len(cmd_output) > 0:
             self.save_progress(CISCOASA_PROG_GOT_TEXT, cmd_output)
 
-        if (create_access_group is True):
+        if create_access_group is True:
             # Have to create the access-group
             # The format is:
             # access-group <acl_name> <direction> interface <interface_name>
@@ -267,19 +267,19 @@ class CiscoasaConnector(BaseConnector):
 
             status_code, cmd_output = self._send_command(acc_group, action_result)
 
-            if (phantom.is_fail(status_code)):
+            if phantom.is_fail(status_code):
                 return (action_result.set_status(phantom.APP_ERROR, CISCOASA_ERR_CMD_EXEC), cmd_output)
 
             self.save_progress(CISCOIOS_PROG_EXECUTED_CMD, acc_group)
 
-            if (len(cmd_output) > 0):
+            if len(cmd_output) > 0:
                 self.save_progress(CISCOASA_PROG_GOT_TEXT, cmd_output)
 
         return (action_result.get_status(), cmd_output)
 
     def _handle_block_ip(self, param, delete=False):
 
-        if (phantom.is_fail(self._connect())):
+        if phantom.is_fail(self._connect()):
             return self.get_status()
 
         action_result = self.add_action_result(ActionResult(dict(param)))
@@ -293,7 +293,7 @@ class CiscoasaConnector(BaseConnector):
 
         if phantom.is_fail(self._get_cmd_output_status(cmd_output)):
             action_result.set_status(phantom.APP_ERROR)
-            if (cmd_output):
+            if cmd_output:
                 action_result.append_to_message(CISCOASA_MSG_FROM_DEVICE)
                 action_result.append_to_message(self._reformat_cmd_output(cmd_output, rem_command=False,
                             to_list=False))
@@ -301,10 +301,10 @@ class CiscoasaConnector(BaseConnector):
         return action_result.get_status()
 
     def validate_ip(self, param):
-        if (param == 'any'):
+        if param == 'any':
             return True
 
-        if (phantom.is_ip(param)):
+        if phantom.is_ip(param):
             return True
 
         return False
@@ -342,7 +342,7 @@ class CiscoasaConnector(BaseConnector):
 
     def _connect(self):
 
-        if (self._shell_channel is not None):
+        if self._shell_channel is not None:
             return phantom.APP_SUCCESS
 
         enable_password = self.get_config()[CISCOIOS_JSON_ENABLE_PASSWORD]
@@ -350,25 +350,25 @@ class CiscoasaConnector(BaseConnector):
         # start the connection
         status_code = self._start_connection()
 
-        if (phantom.is_fail(status_code)):
+        if phantom.is_fail(status_code):
             return status_code
 
         cmd_to_run = 'enable'
         self.save_progress(CISCOIOS_PROG_EXECUTING_CMD, cmd_to_run)
         status_code, cmd_output = self._send_command(cmd_to_run, self)
-        if (phantom.is_fail(status_code)):
+        if phantom.is_fail(status_code):
             return status_code
 
         self.save_progress(CISCOIOS_PROG_SENDING_ENABLE_CREDENTIALS)
         status_code, cmd_output = self._send_command(enable_password, self)
-        if (phantom.is_fail(status_code)):
+        if phantom.is_fail(status_code):
             return status_code
 
         # Need to validate the text output for this command
         self.debug_print('status_code: ', status_code)
         self.debug_print('cmd_output: ', cmd_output)
 
-        if (cmd_output.lower().find('invalid password') != -1):
+        if cmd_output.lower().find('invalid password') != -1:
             self.set_status(phantom.APP_ERROR, CISCOIOS_ERR_ENABLE_COMMAND_LOGIN_FAILED)
             self.append_to_message(CISCOIOS_MSG_CHECK_YOUR_CREDENTIALS)
             return
@@ -377,7 +377,7 @@ class CiscoasaConnector(BaseConnector):
         cmd_to_run = 'terminal pager 0'
         self.save_progress(CISCOIOS_PROG_EXECUTING_CMD, cmd_to_run)
         status_code, cmd_output = self._send_command(cmd_to_run, self)
-        if (phantom.is_fail(status_code)):
+        if phantom.is_fail(status_code):
             return status_code
 
         # Re-init the self status to Error, required for further processing
@@ -413,9 +413,9 @@ class CiscoasaConnector(BaseConnector):
 
         ret_code, output, exc = self._wait_for_data(MAX_RECV_BYTES_TO_READ)
 
-        if (phantom.is_fail(ret_code)):
+        if phantom.is_fail(ret_code):
             self.set_status(phantom.APP_ERROR, CISCOIOS_ERR_READ_FROM_SERVER_FAILED, exc)
-            if (output):
+            if output:
                 self.append_to_message(output)
 
             return self.get_status()
@@ -448,14 +448,14 @@ class CiscoasaConnector(BaseConnector):
         # Get the data
         ret_code, output, exc = self._wait_for_data(size)
 
-        if (phantom.is_fail(ret_code)):
+        if phantom.is_fail(ret_code):
             result.set_status(phantom.APP_ERROR, CISCOIOS_ERR_READ_FROM_SERVER_FAILED, exc)
 
         return (result.set_status(phantom.APP_SUCCESS, CISCOIOS_SUCC_CMD_EXEC), output)
 
     def _reformat_cmd_output(self, cmd_output, rem_command=True, to_list=True):
 
-        if (cmd_output is None):
+        if cmd_output is None:
             return None
 
         try:
@@ -465,10 +465,10 @@ class CiscoasaConnector(BaseConnector):
             data_lines.pop()
 
             # Remove the first line that is the command
-            if (rem_command):
+            if rem_command:
                 del data_lines[0]
 
-            if (to_list):
+            if to_list:
                 return data_lines
         except:
             return None
@@ -477,13 +477,13 @@ class CiscoasaConnector(BaseConnector):
 
     def _get_cmd_output_status(self, cmd_output):
 
-        if (not cmd_output):
+        if not cmd_output:
             return phantom.APP_SUCCESS
 
-        if (cmd_output.find('ERROR:') != -1):
+        if cmd_output.find('ERROR:') != -1:
             return phantom.APP_ERROR
 
-        if (cmd_output.find('Invalid input detected at ') != -1):
+        if cmd_output.find('Invalid input detected at ') != -1:
             return phantom.APP_ERROR
 
         return phantom.APP_SUCCESS
@@ -492,10 +492,10 @@ class CiscoasaConnector(BaseConnector):
 
         ip_str = ip_str.strip()
 
-        if (ip_str == CISCOIOS_CONST_ANY):
+        if ip_str == CISCOIOS_CONST_ANY:
             return ip_str
 
-        if (ip_str.find('/') == -1):
+        if ip_str.find('/') == -1:
             # it's not in cidr format, so just add the mask for the ip
             return ip_str + ' 255.255.255.255'
 
@@ -518,7 +518,7 @@ class CiscoasaConnector(BaseConnector):
             Status code
         """
 
-        if (phantom.is_fail(self._connect())):
+        if phantom.is_fail(self._connect()):
             return self.get_status()
 
         # Create the action_result to store status
@@ -526,7 +526,7 @@ class CiscoasaConnector(BaseConnector):
 
         cmd_to_run = "show version"
         status_code, cmd_output = self._send_command(cmd_to_run, action_result)
-        if (phantom.is_fail(status_code)):
+        if phantom.is_fail(status_code):
             return action_result.get_status()
 
         curr_data = action_result.add_data({})
@@ -540,7 +540,7 @@ class CiscoasaConnector(BaseConnector):
 
     def _test_asset_connectivity(self, param):
 
-        if (phantom.is_fail(self._connect())):
+        if phantom.is_fail(self._connect()):
             self.debug_print("connect failed")
             self.save_progress(CISCOIOS_ERR_CONNECTIVITY_TEST)
             return self.append_to_message(CISCOIOS_ERR_CONNECTIVITY_TEST)
@@ -557,7 +557,7 @@ class CiscoasaConnector(BaseConnector):
                 Status code
         """
 
-        if (phantom.is_fail(self._connect())):
+        if phantom.is_fail(self._connect()):
             return self.get_status()
 
         # Create the action_result to store status
@@ -565,7 +565,7 @@ class CiscoasaConnector(BaseConnector):
 
         cmd_to_run = "show run"
         status_code, cmd_output = self._send_command(cmd_to_run, action_result)
-        if (phantom.is_fail(status_code)):
+        if phantom.is_fail(status_code):
             return action_result.get_status()
 
         curr_data = action_result.add_data({})
@@ -577,7 +577,7 @@ class CiscoasaConnector(BaseConnector):
 
         cmd_to_run = "show switch vlan"
         status_code, cmd_output = self._send_command(cmd_to_run, action_result)
-        if (phantom.is_fail(status_code)):
+        if phantom.is_fail(status_code):
             return action_result.get_status()
 
         curr_data = action_result.add_data({})
@@ -591,7 +591,7 @@ class CiscoasaConnector(BaseConnector):
 
     def _cleanup(self):
 
-        if (self._ssh_client):
+        if self._ssh_client:
             # Close the ssh connection
             self._ssh_client.close()
             self._ssh_client = None
@@ -616,19 +616,19 @@ class CiscoasaConnector(BaseConnector):
         action = self.get_action_identifier()
 
         # Now each individual actions
-        if (action == ACTION_ID_GET_CONFIG):
+        if action == ACTION_ID_GET_CONFIG:
             self._get_config()
-        elif (action == ACTION_ID_GET_VERSION):
+        elif action == ACTION_ID_GET_VERSION:
             self._get_version()
-        elif (action == ACTION_ID_LIST_SESSIONS):
+        elif action == ACTION_ID_LIST_SESSIONS:
             self._list_sessions()
-        elif (action == ACTION_ID_TERMINATE_SESSION):
+        elif action == ACTION_ID_TERMINATE_SESSION:
             self._terminate_session(param)
-        elif (action == ACTION_ID_BLOCK_IP):
+        elif action == ACTION_ID_BLOCK_IP:
             self._handle_block_ip(param)
-        elif (action == ACTION_ID_UNBLOCK_IP):
+        elif action == ACTION_ID_UNBLOCK_IP:
             self._handle_block_ip(param, True)
-        elif (action == phantom.ACTION_ID_TEST_ASSET_CONNECTIVITY):
+        elif action == phantom.ACTION_ID_TEST_ASSET_CONNECTIVITY:
             self._test_asset_connectivity(param)
         return self.get_status()
 
@@ -642,7 +642,7 @@ if __name__ == '__main__':
     import pudb
     pudb.set_trace()
 
-    if (len(sys.argv) < 2):
+    if len(sys.argv) < 2:
         print("No test json specified as input")
         exit(0)
 
