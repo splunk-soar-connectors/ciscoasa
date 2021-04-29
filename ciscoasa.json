@@ -1,19 +1,24 @@
 {
     "appid": "0409C19F-FEE2-4D22-879B-96D90619BD6C",
     "name": "Cisco ASA",
-    "description": "This app supports containment actions like 'block ip' in addition to investigative actions like 'get config' and 'get version' on a Cisco ASA device.",
+    "description": "This app supports containment actions in addition to investigative actions on a Cisco ASA device",
     "type": "firewall",
-    "publisher": "Phantom",
-    "main_module": "ciscoasa_connector.pyc",
-    "app_version": "1.2.18",
+    "publisher": "Splunk",
+    "main_module": "ciscoasa_connector.py",
+    "app_version": "2.0.0",
     "utctime_updated": "2018-12-07T02:00:53.000000Z",
     "package_name": "phantom_ciscoasa",
     "product_vendor": "Cisco Systems",
     "product_name": "Cisco ASA",
     "product_version_regex": ".*",
-    "min_phantom_version": "1.2.236",
-    "logo": "cisco.png",
-    "license": "Copyright (c) Phantom Cyber Corporation 2015-2016",
+    "min_phantom_version": "4.9.39220",
+    "latest_tested_versions": [
+        "On Prem, Version 7.6"
+    ],
+    "python_version": "3",
+    "logo": "logo_cisco.svg",
+    "logo_dark": "logo_cisco_dark.svg",
+    "license": "Copyright (c) 2014-2021 Splunk Inc.",
     "configuration": {
         "device": {
             "data_type": "string",
@@ -43,7 +48,7 @@
     "actions": [
         {
             "action": "test connectivity",
-            "description": "Validate the asset configuration for connectivity. This action runs a few commands on the device to check the connection and credentials.",
+            "description": "Validate the asset configuration for connectivity. This action runs a few commands on the device to check the connection and credentials",
             "type": "test",
             "identifier": "test_asset_connectivity",
             "read_only": true,
@@ -53,7 +58,7 @@
         },
         {
             "action": "get config",
-            "description": "Gets the current running config of the device.",
+            "description": "Gets the current running config of the device",
             "type": "investigate",
             "identifier": "get_config",
             "read_only": true,
@@ -61,11 +66,11 @@
             "output": [
                 {
                     "data_path": "action_result.status",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.message",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "example_values": [
+                        "success",
+                        "failed"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.command",
@@ -74,6 +79,17 @@
                 {
                     "data_path": "action_result.data.*.output",
                     "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.summary",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "example_values": [
+                        "Command execution successful"
+                    ]
                 },
                 {
                     "data_path": "summary.total_objects",
@@ -88,7 +104,7 @@
         },
         {
             "action": "get version",
-            "description": "Gets the software version information of the device.",
+            "description": "Gets the software version information of the device",
             "type": "investigate",
             "identifier": "get_version",
             "read_only": true,
@@ -96,11 +112,11 @@
             "output": [
                 {
                     "data_path": "action_result.status",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.message",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "example_values": [
+                        "success",
+                        "failed"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.command",
@@ -109,6 +125,17 @@
                 {
                     "data_path": "action_result.data.*.output",
                     "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.summary",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "example_values": [
+                        "Command execution successful"
+                    ]
                 },
                 {
                     "data_path": "summary.total_objects",
@@ -124,7 +151,7 @@
         {
             "action": "block ip",
             "description": "Block an IP",
-            "verbose": "This action requires parameters like 'access-list' and 'interface' to be specified. It's usually a good idea to run 'get config' and 'get version' before to get this information",
+            "verbose": "This action requires parameters like 'access_list' and 'interface' to be specified. It's usually a good idea to run 'get config' and 'get version' before to get this information.",
             "type": "contain",
             "identifier": "block_ip",
             "undo": "unblock ip",
@@ -137,7 +164,8 @@
                     "contains": [
                         "ip"
                     ],
-                    "required": true
+                    "required": true,
+                    "primary": true
                 },
                 "src": {
                     "description": "Source IP address, can be 'any' or in CIDR format",
@@ -146,7 +174,8 @@
                     "contains": [
                         "ip"
                     ],
-                    "required": true
+                    "required": true,
+                    "primary": true
                 },
                 "direction": {
                     "description": "Rule direction",
@@ -158,7 +187,7 @@
                     ],
                     "required": true
                 },
-                "access-list": {
+                "access_list": {
                     "description": "Access-list name",
                     "data_type": "string",
                     "order": 3,
@@ -187,22 +216,20 @@
                     "data_path": "action_result.status",
                     "data_type": "string",
                     "column_name": "Result",
-                    "column_order": 6
+                    "column_order": 6,
+                    "example_values": [
+                        "success",
+                        "failed"
+                    ]
                 },
                 {
-                    "data_path": "action_result.parameter.src",
+                    "data_path": "action_result.parameter.access_list",
                     "data_type": "string",
-                    "contains": [
-                        "ip"
-                    ],
-                    "column_name": "Src IP",
-                    "column_order": 2
-                },
-                {
-                    "data_path": "action_result.parameter.direction",
-                    "data_type": "string",
-                    "column_name": "Direction",
-                    "column_order": 1
+                    "column_name": "Access List",
+                    "column_order": 4,
+                    "example_values": [
+                        "Default"
+                    ]
                 },
                 {
                     "data_path": "action_result.parameter.dest",
@@ -211,19 +238,28 @@
                         "ip"
                     ],
                     "column_name": "Destination IP",
-                    "column_order": 0
+                    "column_order": 0,
+                    "example_values": [
+                        "8.8.8.8"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.direction",
+                    "data_type": "string",
+                    "column_name": "Direction",
+                    "column_order": 1,
+                    "example_values": [
+                        "in"
+                    ]
                 },
                 {
                     "data_path": "action_result.parameter.interface",
                     "data_type": "string",
                     "column_name": "Interface",
-                    "column_order": 3
-                },
-                {
-                    "data_path": "action_result.parameter.access-list",
-                    "data_type": "string",
-                    "column_name": "Access List",
-                    "column_order": 4
+                    "column_order": 3,
+                    "example_values": [
+                        "Ethernet0/1"
+                    ]
                 },
                 {
                     "data_path": "action_result.parameter.line",
@@ -232,8 +268,31 @@
                     "column_order": 5
                 },
                 {
-                    "data_path": "action_result.message",
+                    "data_path": "action_result.parameter.src",
+                    "data_type": "string",
+                    "contains": [
+                        "ip"
+                    ],
+                    "column_name": "Src IP",
+                    "column_order": 2,
+                    "example_values": [
+                        "8.8.8.8"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data",
                     "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.summary",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "example_values": [
+                        "Command execution successful"
+                    ]
                 },
                 {
                     "data_path": "summary.total_objects",
@@ -261,7 +320,8 @@
                     "contains": [
                         "ip"
                     ],
-                    "required": true
+                    "required": true,
+                    "primary": true
                 },
                 "src": {
                     "description": "Source IP address, can be 'any' or in CIDR format",
@@ -270,7 +330,8 @@
                     "contains": [
                         "ip"
                     ],
-                    "required": true
+                    "required": true,
+                    "primary": true
                 },
                 "direction": {
                     "description": "Rule direction",
@@ -282,7 +343,7 @@
                     ],
                     "required": true
                 },
-                "access-list": {
+                "access_list": {
                     "description": "Access-list name",
                     "data_type": "string",
                     "order": 3,
@@ -306,22 +367,20 @@
                     "data_path": "action_result.status",
                     "data_type": "string",
                     "column_name": "Result",
-                    "column_order": 6
+                    "column_order": 6,
+                    "example_values": [
+                        "success",
+                        "failed"
+                    ]
                 },
                 {
-                    "data_path": "action_result.parameter.src",
+                    "data_path": "action_result.parameter.access_list",
                     "data_type": "string",
-                    "contains": [
-                        "ip"
-                    ],
-                    "column_name": "Src IP",
-                    "column_order": 2
-                },
-                {
-                    "data_path": "action_result.parameter.direction",
-                    "data_type": "string",
-                    "column_name": "Direction",
-                    "column_order": 1
+                    "column_name": "Access List",
+                    "column_order": 4,
+                    "example_values": [
+                        "Default"
+                    ]
                 },
                 {
                     "data_path": "action_result.parameter.dest",
@@ -330,23 +389,55 @@
                         "ip"
                     ],
                     "column_name": "Destination IP",
-                    "column_order": 0
+                    "column_order": 0,
+                    "example_values": [
+                        "8.8.8.8"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.direction",
+                    "data_type": "string",
+                    "column_name": "Direction",
+                    "column_order": 1,
+                    "example_values": [
+                        "in"
+                    ]
                 },
                 {
                     "data_path": "action_result.parameter.interface",
                     "data_type": "string",
                     "column_name": "Interface",
-                    "column_order": 3
+                    "column_order": 3,
+                    "example_values": [
+                        "Ethernet0/1"
+                    ]
                 },
                 {
-                    "data_path": "action_result.parameter.access-list",
+                    "data_path": "action_result.parameter.src",
                     "data_type": "string",
-                    "column_name": "Access List",
-                    "column_order": 4
+                    "contains": [
+                        "ip"
+                    ],
+                    "column_name": "Src IP",
+                    "column_order": 2,
+                    "example_values": [
+                        "8.8.8.8"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.summary",
+                    "data_type": "string"
                 },
                 {
                     "data_path": "action_result.message",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "example_values": [
+                        "Command execution successful"
+                    ]
                 },
                 {
                     "data_path": "summary.total_objects",
@@ -374,13 +465,64 @@
             },
             "output": [
                 {
-                    "data_path": "action_result.data.*.users.*.Username",
+                    "data_path": "action_result.status",
                     "data_type": "string",
-                    "contains": [
-                        "user name"
-                    ],
-                    "column_name": "Username",
-                    "column_order": 0
+                    "example_values": [
+                        "success",
+                        "failed"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.users.*.BytesRx",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.users.*.BytesTx",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.users.*.Duration",
+                    "data_type": "string",
+                    "column_name": "Duration",
+                    "column_order": 3
+                },
+                {
+                    "data_path": "action_result.data.*.users.*.Encryption",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.users.*.GroupPolicy",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.users.*.Hashing",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.users.*.Inactivity",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.users.*.Index",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.users.*.License",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.users.*.LoginTime",
+                    "data_type": "string",
+                    "column_name": "Login Time",
+                    "column_order": 2
+                },
+                {
+                    "data_path": "action_result.data.*.users.*.NACResult",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.users.*.Protocol",
+                    "data_type": "string"
                 },
                 {
                     "data_path": "action_result.data.*.users.*.PublicIP",
@@ -392,67 +534,20 @@
                     "column_order": 1
                 },
                 {
-                    "data_path": "action_result.data.*.users.*.LoginTime",
-                    "data_type": "string",
-                    "column_name": "Login Time",
-                    "column_order": 2
-                },
-                {
-                    "data_path": "action_result.data.*.users.*.Duration",
-                    "data_type": "string",
-                    "column_name": "Duration",
-                    "column_order": 3
-                },
-                {
-                    "data_path": "action_result.id",
+                    "data_path": "action_result.data.*.users.*.TunnelGroup",
                     "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.users.*.Username",
+                    "data_type": "string",
+                    "contains": [
+                        "user name"
+                    ],
+                    "column_name": "Username",
+                    "column_order": 0
                 },
                 {
                     "data_path": "action_result.data.*.users.*.VLAN",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.users.*.Index",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.users.*.BytesRx",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.users.*.BytesTx",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.users.*.Hashing",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.users.*.License",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.users.*.Protocol",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.users.*.NACResult",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.users.*.Encryption",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.users.*.Inactivity",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.users.*.GroupPolicy",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.users.*.TunnelGroup",
                     "data_type": "string"
                 },
                 {
@@ -460,16 +555,18 @@
                     "data_type": "string"
                 },
                 {
-                    "data_path": "action_result.status",
-                    "data_type": "string"
+                    "data_path": "action_result.summary.total_users",
+                    "data_type": "numeric",
+                    "example_values": [
+                        0
+                    ]
                 },
                 {
                     "data_path": "action_result.message",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.summary.total_users",
-                    "data_type": "numeric"
+                    "data_type": "string",
+                    "example_values": [
+                        "Successfully retrived user sessions"
+                    ]
                 },
                 {
                     "data_path": "summary.total_objects",
@@ -508,10 +605,12 @@
             },
             "output": [
                 {
-                    "data_path": "action_result.message",
+                    "data_path": "action_result.status",
                     "data_type": "string",
-                    "column_name": "Message",
-                    "column_order": 0
+                    "example_values": [
+                        "success",
+                        "failed"
+                    ]
                 },
                 {
                     "data_path": "action_result.parameter.username",
@@ -520,19 +619,30 @@
                     "contains": [
                         "user name"
                     ],
-                    "column_order": 1
+                    "column_order": 1,
+                    "example_values": [
+                        "Admin"
+                    ]
                 },
                 {
-                    "data_path": "action_result.id",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.status",
+                    "data_path": "action_result.data",
                     "data_type": "string"
                 },
                 {
                     "data_path": "action_result.summary.sessions_terminated",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "example_values": [
+                        0
+                    ]
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "column_name": "Message",
+                    "column_order": 0,
+                    "example_values": [
+                        "No such user is logged in"
+                    ]
                 },
                 {
                     "data_path": "summary.total_objects",
