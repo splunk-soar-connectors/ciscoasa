@@ -63,6 +63,9 @@
             "identifier": "get_config",
             "read_only": true,
             "parameters": {},
+            "render": {
+                "type": "json"
+            },
             "output": [
                 {
                     "data_path": "action_result.status",
@@ -109,6 +112,9 @@
             "identifier": "get_version",
             "read_only": true,
             "parameters": {},
+            "render": {
+                "type": "json"
+            },
             "output": [
                 {
                     "data_path": "action_result.status",
