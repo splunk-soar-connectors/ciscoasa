@@ -306,6 +306,10 @@ class CiscoasaConnector(BaseConnector):
 
         if phantom.is_ip(param):
             return True
+        elif '/' in param:
+            cidr = param.split('/')
+            if phantom.is_ip(cidr[0]) and int(cidr[1]) in range(0,33):
+                return True
 
         return False
 
