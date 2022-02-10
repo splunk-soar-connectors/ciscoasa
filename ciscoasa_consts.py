@@ -1,6 +1,6 @@
 # File: ciscoasa_consts.py
 #
-# Copyright (c) 2014-2021 Splunk Inc.
+# Copyright (c) 2014-2022 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ CISCOASA_JSON_DEST_MASK = "dest_mask"
 CISCOASA_JSON_DEST = "dest"
 CISCOASA_JSON_SRC = "src"
 CISCOASA_JSON_IP_USERNAME = "username"
-CISCOIOS_JSON_ENABLE_PASSWORD = "enable_password"
+CISCOIOS_JSON_ENABLE_PASSWORD = "enable_password"  # pragma: allowlist secret
 CISCOIOS_JSON_CMD = "command"
 CISCOIOS_JSON_OUTPUT = "output"
 

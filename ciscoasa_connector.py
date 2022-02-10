@@ -1,6 +1,6 @@
 # File: ciscoasa_connector.py
 #
-# Copyright (c) 2014-2021 Splunk Inc.
+# Copyright (c) 2014-2022 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,19 +15,19 @@
 #
 #
 # Phantom imports
-import phantom.app as phantom
-from phantom.base_connector import BaseConnector
-from phantom.action_result import ActionResult
-
-# THIS Connector imports
-from ciscoasa_consts import *
-
-import paramiko
 import socket
 import sys
 from socket import inet_ntoa
 from struct import pack
+
+import paramiko
+import phantom.app as phantom
 from parse import parse
+from phantom.action_result import ActionResult
+from phantom.base_connector import BaseConnector
+
+# THIS Connector imports
+from ciscoasa_consts import *
 
 
 class CiscoasaConnector(BaseConnector):
@@ -314,7 +314,7 @@ class CiscoasaConnector(BaseConnector):
             return True
         elif '/' in param:
             cidr = param.split('/')
-            if phantom.is_ip(cidr[0]) and int(cidr[1]) in range(0,33):
+            if phantom.is_ip(cidr[0]) and int(cidr[1]) in range(0, 33):
                 return True
 
         return False

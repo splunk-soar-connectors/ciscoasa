@@ -1,5 +1,0 @@
-docker-compose.yml
-.gitlab-ci.yml
-Makefile
-whitesource-results
-.git*
