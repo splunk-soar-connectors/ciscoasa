@@ -166,7 +166,7 @@
                     "data_type": "string",
                     "order": 0,
                     "contains": [
-                        "destination ip"
+                        "ip"
                     ],
                     "required": true,
                     "primary": true
@@ -176,7 +176,7 @@
                     "data_type": "string",
                     "order": 1,
                     "contains": [
-                        "source ip"
+                        "ip"
                     ],
                     "required": true,
                     "primary": true
@@ -239,7 +239,7 @@
                     "data_path": "action_result.parameter.dest",
                     "data_type": "string",
                     "contains": [
-                        "destination ip"
+                        "ip"
                     ],
                     "column_name": "Destination IP",
                     "column_order": 0,
@@ -275,7 +275,7 @@
                     "data_path": "action_result.parameter.src",
                     "data_type": "string",
                     "contains": [
-                        "source ip"
+                        "ip"
                     ],
                     "column_name": "Src IP",
                     "column_order": 2,
@@ -322,7 +322,7 @@
                     "data_type": "string",
                     "order": 0,
                     "contains": [
-                        "destination ip"
+                        "ip"
                     ],
                     "required": true,
                     "primary": true
@@ -332,7 +332,7 @@
                     "data_type": "string",
                     "order": 1,
                     "contains": [
-                        "source ip"
+                        "ip"
                     ],
                     "required": true,
                     "primary": true
@@ -390,7 +390,7 @@
                     "data_path": "action_result.parameter.dest",
                     "data_type": "string",
                     "contains": [
-                        "destination ip"
+                        "ip"
                     ],
                     "column_name": "Destination IP",
                     "column_order": 0,
@@ -420,7 +420,7 @@
                     "data_path": "action_result.parameter.src",
                     "data_type": "string",
                     "contains": [
-                        "source ip"
+                        "ip"
                     ],
                     "column_name": "Src IP",
                     "column_order": 2,
