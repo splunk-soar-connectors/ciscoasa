@@ -1,27 +1,33 @@
-# --
 # File: ciscoasa_connector.py
 #
-# Copyright (c) 2014-2021 Splunk Inc.
+# Copyright (c) 2014-2022 Splunk Inc.
 #
-# SPLUNK CONFIDENTIAL - Use or disclosure of this material in whole or in part
-# without a valid written license from Splunk Inc. is PROHIBITED.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
 #
-# --
-
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software distributed under
+# the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+# either express or implied. See the License for the specific language governing permissions
+# and limitations under the License.
+#
+#
 # Phantom imports
-import phantom.app as phantom
-from phantom.base_connector import BaseConnector
-from phantom.action_result import ActionResult
-
-# THIS Connector imports
-from ciscoasa_consts import *
-
-import paramiko
 import socket
 import sys
 from socket import inet_ntoa
 from struct import pack
+
+import paramiko
+import phantom.app as phantom
 from parse import parse
+from phantom.action_result import ActionResult
+from phantom.base_connector import BaseConnector
+
+# THIS Connector imports
+from ciscoasa_consts import *
 
 
 class CiscoasaConnector(BaseConnector):
@@ -308,7 +314,7 @@ class CiscoasaConnector(BaseConnector):
             return True
         elif '/' in param:
             cidr = param.split('/')
-            if phantom.is_ip(cidr[0]) and int(cidr[1]) in range(0,33):
+            if phantom.is_ip(cidr[0]) and int(cidr[1]) in range(0, 33):
                 return True
 
         return False
@@ -648,7 +654,7 @@ if __name__ == '__main__':
 
     if len(sys.argv) < 2:
         print("No test json specified as input")
-        exit(0)
+        sys.exit(0)
 
     with open(sys.argv[1]) as f:
         in_json = f.read()
@@ -660,4 +666,4 @@ if __name__ == '__main__':
         ret_val = connector._handle_action(json.dumps(in_json), None)
         print(ret_val)
 
-    exit(0)
+    sys.exit(0)

@@ -3,22 +3,20 @@
     "name": "Cisco ASA",
     "description": "This app supports containment actions in addition to investigative actions on a Cisco ASA device",
     "type": "firewall",
-    "publisher": "Splunk",
+    "publisher": "Splunk Community",
     "main_module": "ciscoasa_connector.py",
-    "app_version": "2.0.4",
-    "utctime_updated": "2021-06-07T23:55:34.000000Z",
+    "app_version": "3.0.0",
+    "utctime_updated": "2022-01-07T20:56:17.000000Z",
     "package_name": "phantom_ciscoasa",
     "product_vendor": "Cisco Systems",
     "product_name": "Cisco ASA",
     "product_version_regex": ".*",
-    "min_phantom_version": "4.9.39220",
-    "latest_tested_versions": [
-        "On Prem, Version 7.6"
-    ],
+    "min_phantom_version": "5.1.0",
+    "fips_compliant": false,
     "python_version": "3",
     "logo": "logo_cisco.svg",
     "logo_dark": "logo_cisco_dark.svg",
-    "license": "Copyright (c) 2014-2021 Splunk Inc.",
+    "license": "Copyright (c) 2014-2022 Splunk Inc.",
     "configuration": {
         "device": {
             "data_type": "string",
@@ -373,7 +371,7 @@
                     "data_path": "action_result.status",
                     "data_type": "string",
                     "column_name": "Result",
-                    "column_order": 6,
+                    "column_order": 5,
                     "example_values": [
                         "success",
                         "failed"
@@ -661,5 +659,45 @@
             ],
             "versions": "EQ(*)"
         }
-    ]
+    ],
+    "pip_dependencies": {
+        "wheel": [
+            {
+                "module": "PyNaCl",
+                "input_file": "wheels/PyNaCl-1.4.0-cp35-abi3-manylinux1_x86_64.manylinux_2_5_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl"
+            },
+            {
+                "module": "bcrypt",
+                "input_file": "wheels/bcrypt-3.2.0-cp36-abi3-manylinux2010_x86_64.manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl"
+            },
+            {
+                "module": "cffi",
+                "input_file": "wheels/cffi-1.15.0-cp36-cp36m-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl"
+            },
+            {
+                "module": "cryptography",
+                "input_file": "wheels/cryptography-36.0.0-cp36-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl"
+            },
+            {
+                "module": "paramiko",
+                "input_file": "wheels/paramiko-2.7.2-py2.py3-none-any.whl"
+            },
+            {
+                "module": "parse",
+                "input_file": "wheels/parse-1.17.0-py3-none-any.whl"
+            },
+            {
+                "module": "pycparser",
+                "input_file": "wheels/pycparser-2.21-py2.py3-none-any.whl"
+            },
+            {
+                "module": "simplejson",
+                "input_file": "wheels/simplejson-3.17.2-cp36-cp36m-manylinux2010_x86_64.manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl"
+            },
+            {
+                "module": "six",
+                "input_file": "wheels/six-1.16.0-py2.py3-none-any.whl"
+            }
+        ]
+    }
 }
