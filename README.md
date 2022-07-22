@@ -2,7 +2,7 @@
 # Cisco ASA
 
 Publisher: Splunk Community  
-Connector Version: 3\.0\.0  
+Connector Version: 3\.0\.1  
 Product Vendor: Cisco Systems  
 Product Name: Cisco ASA  
 Product Version Supported (regex): "\.\*"  
