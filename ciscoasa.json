@@ -16,7 +16,7 @@
     "python_version": "3",
     "logo": "logo_cisco.svg",
     "logo_dark": "logo_cisco_dark.svg",
-    "license": "Copyright (c) 2014-2022 Splunk Inc.",
+    "license": "Copyright (c) 2014-2023 Splunk Inc.",
     "configuration": {
         "device": {
             "data_type": "string",
